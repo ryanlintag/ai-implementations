@@ -5,6 +5,14 @@ VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfExtractionWebApp", "PdfExtractionWebApp\PdfExtractionWebApp.csproj", "{81F3BB8A-9E5C-445D-9942-38F29907EB7D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Implementations", "Implementations", "{9ED30C01-3C1C-4BE7-B106-7C22DC66ACD0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{14F05133-96C9-41CC-9A05-2C3D8F98B3AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfReaderBusiness", "PdfReaderBusiness\PdfReaderBusiness.csproj", "{72B40129-07DB-4BC1-89FE-B64AF7D5FA21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextSharpReader", "TextSharpReader\TextSharpReader.csproj", "{ABDDE384-7EE5-4DD5-B76A-6D3E24257929}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +23,20 @@ Global
 		{81F3BB8A-9E5C-445D-9942-38F29907EB7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81F3BB8A-9E5C-445D-9942-38F29907EB7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81F3BB8A-9E5C-445D-9942-38F29907EB7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72B40129-07DB-4BC1-89FE-B64AF7D5FA21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72B40129-07DB-4BC1-89FE-B64AF7D5FA21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72B40129-07DB-4BC1-89FE-B64AF7D5FA21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72B40129-07DB-4BC1-89FE-B64AF7D5FA21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABDDE384-7EE5-4DD5-B76A-6D3E24257929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABDDE384-7EE5-4DD5-B76A-6D3E24257929}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABDDE384-7EE5-4DD5-B76A-6D3E24257929}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABDDE384-7EE5-4DD5-B76A-6D3E24257929}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ABDDE384-7EE5-4DD5-B76A-6D3E24257929} = {9ED30C01-3C1C-4BE7-B106-7C22DC66ACD0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6D983310-CCCE-49AD-A848-7F0FC821CA0C}
