@@ -20,9 +20,8 @@ namespace PdfExtractionWebApp.Controllers
         public ViewResult Index(HttpPostedFileBase pdfFile)
         {
             var stream = pdfFile.InputStream;
-            var pdfBytes = new byte[stream.Length];
             _pdfReader = new ITextSharpPdfReader();
-            var sb = _pdfReader.Read(pdfBytes);
+            var sb = _pdfReader.Read(stream);
             return View();
         }
 
