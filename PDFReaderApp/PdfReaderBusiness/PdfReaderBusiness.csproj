@@ -41,6 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Documents\PropertyMeta.cs" />
+    <Compile Include="Documents\Stellis\PositionStellisModel.cs" />
+    <Compile Include="Documents\Stellis\StellisModel.cs" />
     <Compile Include="IPdfReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
