@@ -2,8 +2,6 @@
 {
     public class PositionStellisModel
     {
-        public string CandidateName { get; set; }
-        public string JobTitle { get; set; }
         public string Step { get; set; }
         public string LatestSubmissionMedium { get; set; }
         public string Recruiter { get; set; }
