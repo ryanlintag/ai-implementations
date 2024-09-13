@@ -12,6 +12,7 @@ namespace PdfExtractionWebApp.Controllers
     public class HomeController : Controller
     {
         private IPdfReader _pdfReader { get; set; }
+        private IPdfDataParser _pdfDataParser { get; set; }
         private readonly List<Tuple<string, string, bool>> _nodes = new List<Tuple<string, string, bool>>()
         {
             new Tuple<string, string, bool>("Step", "Latest Submission Medium", true),
@@ -35,7 +36,8 @@ namespace PdfExtractionWebApp.Controllers
             var stream = pdfFile.InputStream;
             _pdfReader = new ITextSharpPdfReader();
             var sb = _pdfReader.Read(stream);
-            
+            _pdfDataParser = new PdfDataParser();
+            var stellisData = _pdfDataParser.Parse(sb);
             return View();
         }
 

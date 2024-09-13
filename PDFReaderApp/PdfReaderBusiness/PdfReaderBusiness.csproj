@@ -44,6 +44,7 @@
     <Compile Include="Documents\PropertyMeta.cs" />
     <Compile Include="Documents\Stellis\PositionStellisModel.cs" />
     <Compile Include="Documents\Stellis\StellisModel.cs" />
+    <Compile Include="IPdfDataParser.cs" />
     <Compile Include="IPdfReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
