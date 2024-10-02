@@ -28,6 +28,15 @@ namespace PdfReaderBusiness.Documents.Stellis
         public List<ComputerSkill> OtherComputerSkills { get; set; }
         public List<LanguageLevel> WHOOfficialLanguages { get; set; }
         public List<LanguageLevel> OtherLanguages { get; set; }
+        public string AdvanceNotice { get; set; }
+        public string DateOfAvailability { get; set; }
+        public string MinContractDuration { get; set; }
+        public string EmployeeStatus { get; set; }
+        public string JobLevel { get; set; }
+        public string JobType { get; set; }
+        public string Schedule { get; set; }
+        public string PreviouslyWorkedWithWHO { get; set; }
+        public string MedicalStatusForDeployment { get; set; }
     }
 
     public class ComputerSkill
