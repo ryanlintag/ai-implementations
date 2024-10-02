@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Documents\PropertyMeta.cs" />
+    <Compile Include="Documents\Stellis\CandidatePersonalInfoStellisModel.cs" />
     <Compile Include="Documents\Stellis\PositionStellisModel.cs" />
     <Compile Include="Documents\Stellis\StellisModel.cs" />
     <Compile Include="IPdfDataParser.cs" />
