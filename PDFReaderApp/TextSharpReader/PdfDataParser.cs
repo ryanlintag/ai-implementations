@@ -50,7 +50,22 @@ namespace TextSharpReader
 
             //Basic Profile
             new ReadModelMapper("Computer skills/applications", "Other Computer Skills", "BasicProfileComputerSkills"),
-            new ReadModelMapper("Official WHO languages", "Other Languages", "BasicProfileOfficialLanguages")
+            new ReadModelMapper("Official WHO languages", "Other Languages", "BasicProfileOfficialLanguages"),
+            new ReadModelMapper("Other languages", "Basic Profile", "BasicProfileOtherLanguages"),
+            new ReadModelMapper("Advance Notice", "Date of Availability", "BasicProfileAdvanceNotice"),
+            new ReadModelMapper("Date of Availability", "Please select the contract durations you", "BasicProfileDateOfAvailability"),
+            new ReadModelMapper("would be willing to accept", "Employee Status", "BasicProfileMinContractDuration"),
+            new ReadModelMapper("Employee Status", "Job Level", "BasicProfileEmployeeStatus"),
+            new ReadModelMapper("Job Level", "Job Type", "BasicProfileJobLevel"),
+            new ReadModelMapper("Job Type", "Schedule", "BasicProfileJobType"),
+            new ReadModelMapper("Schedule", "Have you previously worked with WHO", "BasicProfileSchedule"),
+            new ReadModelMapper("Have you previously worked with WHO", "WHO Rosters", "BasicProfilePreviouslyWorkedWithWHO"),
+            new ReadModelMapper("Managed rosters", "Med. status for deployment", "BasicProfileManagedRosters"),
+            new ReadModelMapper("Med. status for deployment", "WHO Internships", "BasicProfileMedicalStatusForDeployment"),
+
+
+
+            //new ReadModelMapper("", "", ""),
 
         });
         public StellisModel Parse(List<string> pdfText)
@@ -224,6 +239,51 @@ namespace TextSharpReader
                     }
                     stellisModel.BasicInfo.WHOOfficialLanguages.AddRange(lstLanguage);
                     break;
+                case "BasicProfileOtherLanguages":
+                    var otherLanguages = propertyData.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                    var lstOLanguage = new List<LanguageLevel>();
+                    foreach (var language in otherLanguages)
+                    {
+                        var le = language.Split(new string[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
+                        if (le.Length > 1)
+                        {
+                            lstOLanguage.Add(new LanguageLevel()
+                            {
+                                LanguageName = le[0].Trim(),
+                                LanguageProficiency = le[1].Trim()
+                            });
+                        }
+                    }
+                    stellisModel.BasicInfo.OtherLanguages.AddRange(lstOLanguage);
+                break;
+                case "BasicProfileAdvanceNotice":
+                    stellisModel.BasicInfo.AdvanceNotice = propertyData;
+                break;
+                case "BasicProfileDateOfAvailability":
+                    stellisModel.BasicInfo.DateOfAvailability = propertyData;
+                break;
+                case "BasicProfileMinContractDuration":
+                    stellisModel.BasicInfo.MinContractDuration = propertyData;
+                break;
+                case "BasicProfileEmployeeStatus":
+                    stellisModel.BasicInfo.EmployeeStatus = propertyData;
+                break;
+                case "BasicProfileJobLevel":
+                    stellisModel.BasicInfo.JobLevel = propertyData;
+                break;
+                case "BasicProfileJobType":
+                    stellisModel.BasicInfo.JobType = propertyData;
+                break;
+                case "BasicProfileSchedule":
+                    stellisModel.BasicInfo.Schedule = propertyData;
+                break;
+                case "BasicProfilePreviouslyWorkedWithWHO":
+                    stellisModel.BasicInfo.PreviouslyWorkedWithWHO = propertyData;
+                break;
+                case "BasicProfileMedicalStatusForDeployment":
+                    stellisModel.BasicInfo.MedicalStatusForDeployment = propertyData;
+                break;
+
                 #endregion
                 default: break;
             }
