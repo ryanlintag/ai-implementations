@@ -11,9 +11,11 @@ namespace TextSharpReader
 {
     public class PdfDataParser : IPdfDataParser
     {
+        private const string _educationQualificationTrainingPropertyMap = "EducationQualificationTranining";
+        private const string _workEperiencePropertyMap = "WorkExperienceList";
         private Queue<ReadModelMapper> _data = new Queue<ReadModelMapper>(new List<ReadModelMapper>()
         {
-            //Position
+            #region Position
             new ReadModelMapper("Step", "Latest Submission Medium", "Step"),
             new ReadModelMapper("Latest Submission Medium", "Recruiter", "LatestSubmissionMedium"),
             new ReadModelMapper("Recruiter", "Status", "Recruiter"),
@@ -22,8 +24,9 @@ namespace TextSharpReader
             new ReadModelMapper("Hiring Manager", "Creation Date", "HiringManager"),
             new ReadModelMapper("Creation Date", "Submission Type", "CreationDate"),
             new ReadModelMapper("Submission Type", "Candidate Name Job Title", "SubmissionType"),
+            #endregion
 
-            //Personal Information
+            #region Personal Information
             new ReadModelMapper("First Name", "Family/Last Name", "CandidateFirstName"),
             new ReadModelMapper("Family/Last Name", "Internal Candidate", "CandidateLastName"),
             new ReadModelMapper("Title", "Gender", "CandidateTitle"),
@@ -47,8 +50,9 @@ namespace TextSharpReader
             new ReadModelMapper("Expected relocation until", "Employee Data", "CandidateRelocationUntil"),
             new ReadModelMapper("one of its specialized agencies?", "Do you have dependent children?", "CandidateHasSpouseInUN"),
             new ReadModelMapper("Do you have dependent children?", "Basic Profile", "CandidateHasDependentChildren"),
+            #endregion
 
-            //Basic Profile
+            #region Basic Profile
             new ReadModelMapper("Computer skills/applications", "Other Computer Skills", "BasicProfileComputerSkills"),
             new ReadModelMapper("Official WHO languages", "Other Languages", "BasicProfileOfficialLanguages"),
             new ReadModelMapper("Other languages", "Basic Profile", "BasicProfileOtherLanguages"),
@@ -62,12 +66,19 @@ namespace TextSharpReader
             new ReadModelMapper("Have you previously worked with WHO", "WHO Rosters", "BasicProfilePreviouslyWorkedWithWHO"),
             new ReadModelMapper("Managed rosters", "Med. status for deployment", "BasicProfileManagedRosters"),
             new ReadModelMapper("Med. status for deployment", "WHO Internships", "BasicProfileMedicalStatusForDeployment"),
+            #endregion
 
 
-
-            //new ReadModelMapper("", "", ""),
+            new ReadModelMapper("Education, Qualification and Training", "Work Experience", _educationQualificationTrainingPropertyMap),
+            new ReadModelMapper("Work Experience", "Professional Experience", _workEperiencePropertyMap),
 
         });
+        private Queue<ReadModelMapper> educationQueue = new Queue<ReadModelMapper>(
+        new List<ReadModelMapper>{
+            new ReadModelMapper("", "", ""),
+        });
+        private Queue<string> _educTrainQualify { get; set; } = new Queue<string>();
+        private Queue<string> _workExperience { get; set; } = new Queue<string>();
         public StellisModel Parse(List<string> pdfText)
         {
             StellisModel stellisModel = new StellisModel();
@@ -75,12 +86,17 @@ namespace TextSharpReader
             StringBuilder builder = new StringBuilder();
             var isNodeMappingOngoing = false;
             var isNodeMapperStarted = false;
+            var isEducationQualificationTraining = false;
             for (int i = 0; i < pdfText.Count; i++)
             { 
                 if(node.Start == pdfText[i])
                 {
                     isNodeMapperStarted = true;
                     isNodeMappingOngoing = true;
+                    if(node.PropertyMap == _educationQualificationTrainingPropertyMap && isEducationQualificationTraining == false)
+                    {
+                        isEducationQualificationTraining = true;
+                    }
                     continue;
                 }
                 if (node.End == pdfText[i])
@@ -97,11 +113,19 @@ namespace TextSharpReader
                         isNodeMapperStarted = true;
                         isNodeMappingOngoing = true;
                     }
+                    if (node.PropertyMap == _educationQualificationTrainingPropertyMap)
+                    {
+                        isEducationQualificationTraining = false;
+                    }
                     continue;
                 }
                 if (isNodeMapperStarted && isNodeMappingOngoing)
                 {
                     builder.Append(pdfText[i]);
+                    if(node.PropertyMap == _educationQualificationTrainingPropertyMap)
+                    {
+                        _educTrainQualify.Enqueue(pdfText[i]);
+                    }
                     continue;
                 }
             }
@@ -285,8 +309,16 @@ namespace TextSharpReader
                 break;
 
                 #endregion
+                case _educationQualificationTrainingPropertyMap:
+                    buildEductionTrainingQualificationList(stellisModel);
+                    break;
                 default: break;
             }
+        }
+
+        private void buildEductionTrainingQualificationList(StellisModel stellisModel)
+        {
+            throw new NotImplementedException();
         }
     }
 
