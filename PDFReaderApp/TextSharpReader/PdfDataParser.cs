@@ -70,7 +70,7 @@ namespace TextSharpReader
 
 
             new ReadModelMapper("Education, Qualification and Training", "Work Experience", _educationQualificationTrainingPropertyMap),
-            new ReadModelMapper("Work Experience", "Professional Experience", _workEperiencePropertyMap),
+            new ReadModelMapper("Work Experience", "Cover Letter", _workEperiencePropertyMap),
 
         });
         private Queue<ReadModelMapper> educationQueue = new Queue<ReadModelMapper>(
@@ -125,6 +125,10 @@ namespace TextSharpReader
                     if(node.PropertyMap == _educationQualificationTrainingPropertyMap)
                     {
                         _educTrainQualify.Enqueue(pdfText[i]);
+                    }
+                    if (node.PropertyMap == _workEperiencePropertyMap)
+                    {
+                        _workExperience.Enqueue(pdfText[i]);
                     }
                     continue;
                 }
@@ -312,13 +316,20 @@ namespace TextSharpReader
                 case _educationQualificationTrainingPropertyMap:
                     buildEductionTrainingQualificationList(stellisModel);
                     break;
+                case _workEperiencePropertyMap:
+                    buildWorkExperienceList(stellisModel);
+                    break;
                 default: break;
             }
         }
 
+        private void buildWorkExperienceList(StellisModel stellisModel)
+        {
+
+        }
+
         private void buildEductionTrainingQualificationList(StellisModel stellisModel)
         {
-            throw new NotImplementedException();
         }
     }
 
