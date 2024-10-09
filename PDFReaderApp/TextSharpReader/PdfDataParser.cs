@@ -1,7 +1,9 @@
-﻿using PdfReaderBusiness;
+﻿using iText.Barcodes.Qrcode;
+using PdfReaderBusiness;
 using PdfReaderBusiness.Documents.Stellis;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -70,15 +72,25 @@ namespace TextSharpReader
 
 
             new ReadModelMapper("Education, Qualification and Training", "Work Experience", _educationQualificationTrainingPropertyMap),
-            new ReadModelMapper("Work Experience", "Professional Experience", _workEperiencePropertyMap),
+            new ReadModelMapper("Work Experience", "Cover Letter", _workEperiencePropertyMap),
 
         });
-        private Queue<ReadModelMapper> educationQueue = new Queue<ReadModelMapper>(
-        new List<ReadModelMapper>{
-            new ReadModelMapper("", "", ""),
-        });
+        private Queue<ReadModelMapper> educationQueue = new Queue<ReadModelMapper>();
         private Queue<string> _educTrainQualify { get; set; } = new Queue<string>();
         private Queue<string> _workExperience { get; set; } = new Queue<string>();
+        private readonly List<ReadModelMapper> _workExperienceModelMapperList = 
+            new List<ReadModelMapper>()
+            {
+                new ReadModelMapper("Job Title", "Work schedule", "WEJobTitle"),
+                new ReadModelMapper("Work schedule", "Start Date", "WEWorkSchedule"),
+                new ReadModelMapper("Start Date", "Type of business", "WEStartDate"),
+                new ReadModelMapper("Type of business", "Supervisor's Name", "WETypeOfBusiness"),
+                new ReadModelMapper("Supervisor's Name", "Supervisor's Title", "WESupervisorName"),
+                new ReadModelMapper("Supervisor's Title", "Area of Work", "WESupervisorTitle"),
+                new ReadModelMapper("Area of Work", "Duties and responsibilities", "WEAreaOfWork"),
+                new ReadModelMapper("Duties and responsibilities", "Key Achievements", "WEDutiesAndResponsibilities"),
+                new ReadModelMapper("Key Achievements", "Reference", "WEKeyAchivements"),
+            };
         public StellisModel Parse(List<string> pdfText)
         {
             StellisModel stellisModel = new StellisModel();
@@ -125,6 +137,10 @@ namespace TextSharpReader
                     if(node.PropertyMap == _educationQualificationTrainingPropertyMap)
                     {
                         _educTrainQualify.Enqueue(pdfText[i]);
+                    }
+                    if (node.PropertyMap == _workEperiencePropertyMap)
+                    {
+                        _workExperience.Enqueue(pdfText[i]);
                     }
                     continue;
                 }
@@ -312,16 +328,178 @@ namespace TextSharpReader
                 case _educationQualificationTrainingPropertyMap:
                     buildEductionTrainingQualificationList(stellisModel);
                     break;
+                case _workEperiencePropertyMap:
+                    buildWorkExperienceList(stellisModel);
+                    break;
                 default: break;
+            }
+        }
+
+        private void buildWorkExperienceList(StellisModel stellisModel)
+        {
+            ReadModelMapper[] workExperienceQueue = _workExperienceModelMapperList.ToArray();
+            var list = new List<WorkExperienceStellisModel>();
+            //1. While the _workExperienceQueue has data loop through the list
+            while (_workExperience.Any())
+            {
+                var we = new WorkExperienceStellisModel();
+
+                var isReadingData = false;
+                StringBuilder sb = new StringBuilder();
+                string mapperEnd = string.Empty;
+                for(int i = 0; i < workExperienceQueue.Length; i++)
+                {
+                    var mapper = workExperienceQueue[i];
+                    while (_workExperience.Any()) 
+                    {
+                        var currentString = _workExperience.Dequeue();
+                        if (mapper.Start == currentString && isReadingData == false)
+                        {
+                            isReadingData = true;
+                            sb.Clear();
+                            continue;
+                        }
+                        if (mapper.End == currentString)
+                        {
+                            setWorkExperienceProperty(we, sb.ToString(), mapper.PropertyMap);
+                            isReadingData = false;
+                            if(i < workExperienceQueue.Length - 1)
+                            {
+                                if(mapper.End == workExperienceQueue[i + 1].Start)
+                                {
+                                    isReadingData = true;
+                                    sb.Clear();
+                                }
+                            }
+                            break;
+                        }
+                        sb.Append($"{currentString} ");
+                    }
+
+                }
+                list.Add(we);
+            }
+            if(list.Count > 0)
+            {
+                stellisModel.WorkExperiences.AddRange(list);
+            }
+        }
+
+        private void setWorkExperienceProperty(WorkExperienceStellisModel we, string value, string propertyMap)
+        {
+            switch (propertyMap) 
+            {
+                case "WEJobTitle":
+                    we.JobTitle = value;
+                    break;
+                case "WEWorkSchedule":
+                    we.WorkSchedule = value;
+                    break;
+                case "WEStartDate":
+                    we.StartDate = value;
+                    break;
+                case "WETypeOfBusiness":
+                    we.TypeOfBusiness = value;
+                    break;
+                case "WEMajorOffice":
+                    we.MajorOffice = value;
+                    break;
+                case "WEDepartmentDivision":
+                    we.DepartmentDivision = value;
+                    break;
+                case "WEDutyStation":
+                    we.DutyStation = value;
+                    break;
+                case "WEContractType":
+                    we.ContractType = value;
+                    break;
+                case "WEGrade":
+                    we.Grade = value;
+                    break;
+                case "WESupervisorName":
+                    we.SupervisorName = value;
+                    break;
+                case "WESupervisorTitle":
+                    we.SupervisorTitle = value;
+                    break;
+                //case "WESupervisorPhone":
+                //    we.SupervisorPhone = value;
+                //    break;
+                //case "WESupervisorEmail":
+                //    we.SupervisorEmail = value;
+                //    break;
+                case "WEAreaOfWork":
+                    we.AreaOfWork = value;
+                    break;
+                case "WENatureOfWork":
+                    we.NatureOfWork = value;
+                    break;
+                case "WEDutiesAndResponsibilities":
+                    we.DutiesAndResponsibilities = value;
+                    break;
+                case "WEKeyAchivements":
+                    we.Achievements = value;
+                    break;
+                default:
+                    break;
             }
         }
 
         private void buildEductionTrainingQualificationList(StellisModel stellisModel)
         {
-            throw new NotImplementedException();
+            var x = _educTrainQualify.ToArray();
+
+            //var currentLine = _educTrainQualify.Dequeue();
+            List<EducationTrainingQualification> list = new List<EducationTrainingQualification>();
+            EducationTrainingQualification item = null;
+            do
+            {
+                var currentLine = _educTrainQualify.Dequeue();
+                var nextLine = x[x.Length - _educTrainQualify.Count];
+                if(currentLine == "Education/Qualification/Training")
+                {
+                    if(item != null)
+                    {
+                        list.Add(item);
+                    }
+                    switch (nextLine)
+                    {
+                        case "Education":
+                            item = new Education(nextLine);
+                            break;
+                        case "Qualification":
+                            item = new Qualification(nextLine);
+                            break;
+                        case "Training":
+                            item = new Training(nextLine);
+                            break;
+                        default:
+                            break;
+                    }
+                    _educTrainQualify.Dequeue();
+                    continue;
+                }
+                //map the data
+                if(item != null)
+                {
+                    item.AddString(currentLine);
+                }
+
+                if (_educTrainQualify.Count == 1)
+                {
+                    //currentline will be the last line
+                    currentLine = _educTrainQualify.Dequeue();
+                    item.AddString(currentLine);
+                    list.Add(item);
+                    break;
+                }
+            } while (_educTrainQualify.Any());
+            if(list != null && list.Count > 0)
+            {
+                stellisModel.EducationTrainingQualifications.AddRange(list);
+            }
         }
     }
-
     public sealed class ReadModelMapper
     {
         public string Start { get; private set; }
